@@ -1,0 +1,43 @@
+[
+    {
+      "prompt": "Generate an ERC-20 token contract with burn functionality",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract ERC20Token {\n    string public name = \"MyToken\";\n    string public symbol = \"MTK\";\n    uint8 public decimals = 18;\n    uint256 public totalSupply;\n\n    mapping(address => uint256) public balanceOf;\n\n    event Transfer(address indexed from, address indexed to, uint256 value);\n    event Burn(address indexed burner, uint256 value);\n\n    constructor(uint256 initialSupply) {\n        totalSupply = initialSupply * 10 ** uint256(decimals);\n        balanceOf[msg.sender] = totalSupply;\n    }\n\n    function transfer(address _to, uint256 _value) public returns (bool success) {\n        require(balanceOf[msg.sender] >= _value, \"Insufficient balance\");\n        balanceOf[msg.sender] -= _value;\n        balanceOf[_to] += _value;\n        emit Transfer(msg.sender, _to, _value);\n        return true;\n    }\n\n    function burn(uint256 _value) public returns (bool success) {\n        require(balanceOf[msg.sender] >= _value, \"Insufficient balance\");\n        balanceOf[msg.sender] -= _value;\n        totalSupply -= _value;\n        emit Burn(msg.sender, _value);\n        return true;\n    }\n}"
+    },
+    {
+      "prompt": "Generate an ERC-721 NFT contract with metadata storage",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\nimport \"@openzeppelin/contracts/token/ERC721/ERC721.sol\";\n\ncontract MyNFT is ERC721 {\n    uint256 public tokenCounter;\n    mapping(uint256 => string) private _tokenURIs;\n\n    constructor() ERC721(\"MyNFT\", \"MNFT\") {\n        tokenCounter = 0;\n    }\n\n    function createCollectible(string memory tokenURI) public returns (uint256) {\n        uint256 newItemId = tokenCounter;\n        _safeMint(msg.sender, newItemId);\n        _setTokenURI(newItemId, tokenURI);\n        tokenCounter++;\n        return newItemId;\n    }\n\n    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {\n        _tokenURIs[tokenId] = _tokenURI;\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a voting system",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract VotingSystem {\n    mapping(address => bool) public voters;\n    mapping(string => uint256) public votesReceived;\n    string[] public candidateList;\n\n    constructor(string[] memory candidateNames) {\n        candidateList = candidateNames;\n    }\n\n    function vote(string memory candidate) public {\n        require(!voters[msg.sender], \"Already voted\");\n        voters[msg.sender] = true;\n        votesReceived[candidate]++;\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a crowdfunding campaign",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Crowdfunding {\n    mapping(address => uint256) public contributions;\n    address public owner;\n    uint256 public goal;\n    uint256 public deadline;\n\n    constructor(uint256 _goal, uint256 _duration) {\n        owner = msg.sender;\n        goal = _goal;\n        deadline = block.timestamp + _duration;\n    }\n\n    function contribute() public payable {\n        require(block.timestamp < deadline, \"Campaign over\");\n        contributions[msg.sender] += msg.value;\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a decentralized lottery",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Lottery {\n    address public manager;\n    address[] public players;\n\n    constructor() {\n        manager = msg.sender;\n    }\n\n    function enter() public payable {\n        require(msg.value > .01 ether, \"Minimum ETH not met\");\n        players.push(msg.sender);\n    }\n\n    function pickWinner() public restricted {\n        uint index = random() % players.length;\n        payable(players[index]).transfer(address(this).balance);\n        players = new address[](0);\n    }\n\n    function random() private view returns (uint) {\n        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players)));\n    }\n\n    modifier restricted() {\n        require(msg.sender == manager, \"Not manager\");\n        _;\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a simple decentralized exchange",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract SimpleDEX {\n    mapping(address => uint256) public tokenBalance;\n\n    function depositTokens(uint256 amount) public {\n        tokenBalance[msg.sender] += amount;\n    }\n\n    function swapTokens(uint256 amount) public {\n        // Swap logic here\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a time-locked wallet",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract TimeLockedWallet {\n    address public owner;\n    uint256 public unlockTime;\n\n    constructor(uint256 _unlockTime) {\n        owner = msg.sender;\n        unlockTime = _unlockTime;\n    }\n\n    function withdraw() public {\n        require(block.timestamp >= unlockTime, \"Wallet is locked\");\n        payable(owner).transfer(address(this).balance);\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a token vesting schedule",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract TokenVesting {\n    address public beneficiary;\n    uint256 public start;\n    uint256 public duration;\n\n    constructor(address _beneficiary, uint256 _start, uint256 _duration) {\n        beneficiary = _beneficiary;\n        start = _start;\n        duration = _duration;\n    }\n\n    function release() public {\n        // Release tokens gradually\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a decentralized autonomous organization (DAO)",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract DAO {\n    mapping(address => uint256) public shares;\n\n    function propose(string memory proposal) public {\n        // Proposal logic\n    }\n\n    function vote(uint256 proposalId, bool support) public {\n        // Voting logic\n    }\n}"
+    },
+    {
+      "prompt": "Generate a Solidity contract for a staking system",
+      "output": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Staking {\n    mapping(address => uint256) public stakes;\n\n    function stake() public payable {\n        stakes[msg.sender] += msg.value;\n    }\n\n    function withdraw(uint256 amount) public {\n        // Withdrawal logic\n    }\n}"
+    }
+  ]
+  
